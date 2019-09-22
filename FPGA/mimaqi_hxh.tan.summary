@@ -1,0 +1,56 @@
+--------------------------------------------------------------------------------------
+Timing Analyzer Summary
+--------------------------------------------------------------------------------------
+
+Type           : Worst-case tsu
+Slack          : N/A
+Required Time  : None
+Actual Time    : 2.505 ns
+From           : inrow[1]
+To             : jianpandujianma:A3|key_flag
+From Clock     : --
+To Clock       : clk
+Failed Paths   : 0
+
+Type           : Worst-case tco
+Slack          : N/A
+Required Time  : None
+Actual Time    : 17.063 ns
+From           : mimabaocunyanzheng:A5|change_lemp
+To             : change_lemp
+From Clock     : clk
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case th
+Slack          : N/A
+Required Time  : None
+Actual Time    : 2.794 ns
+From           : inrow[1]
+To             : jianpandujianma:A3|inrow_reg[1]
+From Clock     : --
+To Clock       : clk
+Failed Paths   : 0
+
+Type           : Clock Setup: 'clk'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 56.14 MHz ( period = 17.812 ns )
+From           : jianpandujianma:A3|altsyncram:WideOr2_rtl_0|altsyncram_rr01:auto_generated|ram_block1a0~porta_address_reg7
+To             : xianshiluoji:A1|lednum[4]
+From Clock     : clk
+To Clock       : clk
+Failed Paths   : 0
+
+Type           : Total number of failed paths
+Slack          : 
+Required Time  : 
+Actual Time    : 
+From           : 
+To             : 
+From Clock     : 
+To Clock       : 
+Failed Paths   : 0
+
+--------------------------------------------------------------------------------------
+

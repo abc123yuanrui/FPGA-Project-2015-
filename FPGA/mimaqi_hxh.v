@@ -1,0 +1,78 @@
+  
+module mimaqi_hxh ( 
+        input clk, 
+        input rst, 
+        input   [3:0]   inrow,            
+		output  [3:0]   outcol,            
+        output  [7:0] segData,
+		output  [3:0] segCtl,
+		output  led_1,
+		output  led_2,
+		output  led_3,
+		output  led_22,
+		output  led_33,
+		output  led_333,
+		output  led_0,
+		output  led_00,
+		output  led_000,
+		output  led_0000,
+		output  led_00000,
+		output  led_000000,
+		output  led_0000000,
+		output change_lemp,
+		output change_lemp1,
+		output  flag_b,		//clock			
+		output bee
+				     );
+
+           wire[3:0] segData_1;
+           wire[3:0] segData_2;
+           wire[3:0] segData_3;
+           wire[3:0] segData_4;
+           wire [4:0]   key_value; //code 
+           wire [4:0]   keycode; //incode
+           wire [2:0] flag_time;
+        reg [18:0] cnt = 19'd0; 
+        always @ (posedge clk)         cnt = cnt + 1'b1; 
+       xianshiluoji A1( .clk(cnt[16]),
+					.keycode(key_value),
+					.key_ready(key_ready),
+					.segData_1(segData_1),.segData_2(segData_2),.segData_3(segData_3),.segData_4(segData_4),
+					.change_lemp(change_lemp),.change_lemp1(change_lemp1),
+					.flag_b (flag_b)
+				); 
+       jianpandujianma A3(.clk(cnt[0]),.inrow(inrow),.outcol(outcol),
+					.key_value(key_value),
+					.key_ready(key_ready)
+					);
+		
+       shumaguan A2( .CLK(clk),
+						.segCtl(segCtl),.segData(segData),
+						.segData_1(segData_1),.segData_2(segData_2),.segData_3(segData_3),.segData_4(segData_4)
+						
+					  );
+
+	   mimabaocunyanzheng A5(
+                    .keycode(key_value) ,
+                    .clk(clk),
+                    .change_lemp(change_lemp),
+                    .change_lemp1(change_lemp1),
+					.flag_b (flag_b),
+			        . flag_time(flag_time),
+			        .k1(k1),
+			        .led_0(led_0),.led_00(led_00),.led_000(led_000),.led_0000(led_0000),.led_00000(led_00000),
+			        .led_000000(led_000000),.led_0000000(led_0000000),.led_1(led_1),.led_2(led_2),.led_3(led_3),
+			        .led_22(led_22),.led_33(led_33),.led_333(led_333),
+			        .key_ready(key_ready)
+                   );
+    
+       shengyin A4(
+					.keycode(key_value) ,
+					.key_ready(key_ready),
+					.clk(clk),
+					.flag_time(flag_time),
+					.bee (bee),
+					.flag_b (flag_b),
+					.k1(k1)
+             );   
+endmodule
