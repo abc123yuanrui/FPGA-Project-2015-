@@ -1,0 +1,16 @@
+Fitter Status : Failed - Mon Apr 14 12:16:58 2014
+Quartus II 64-Bit Version : 9.0 Build 132 02/25/2009 SJ Full Version
+Revision Name : mimasuo240401
+Top-level Entity Name : mimasuo240401
+Family : Cyclone II
+Device : EP2C5Q208C8
+Timing Models : Final
+Total logic elements : 372
+    Total combinational functions : 288
+    Dedicated logic registers : 244
+Total registers : 244
+Total pins : 39
+Total virtual pins : 0
+Total memory bits : 1,280
+Embedded Multiplier 9-bit elements : 0
+Total PLLs : 0

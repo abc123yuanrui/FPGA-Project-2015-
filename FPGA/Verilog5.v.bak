@@ -1,0 +1,147 @@
+module  password(
+			   input clk,            //25mhz
+                           input [4:0] keycode ,//按键编码 
+			   output reg flag_b,//输出判断开锁还是改密两种状态
+			   input key_ready,
+			   input k1,         //标志位，报警后恢复常态
+			   output reg led_1,
+			   output reg led_2,
+			   output reg led_3,//开锁次数指示灯
+			   output reg change_lemp,//修改密码状态标志位
+			   output reg change_lemp1, //改密成功标志位
+			   output reg [2:0] flag_time//输错密码次数
+               );
+reg [4:0] password_1;
+reg [4:0] password_2;
+reg [4:0] password_3;
+reg [4:0] password_4;//密码寄存器
+
+reg  [15:0]count_15;//倒计时计数器
+reg k2;//倒计时截止标志位
+reg  [15:0]cnt1ms;
+//////////////////////////////////////////////////////
+reg clk1000Hz;
+initial                                     
+ begin
+     count_15=0;   
+end
+always@(posedge clk)                            //1ms     clk1000Hz
+    begin
+    if(cnt1ms==16'd12500)
+        begin
+            cnt1ms<=16'b0;
+            clk1000Hz<=~clk1000Hz;
+        end
+    else
+        cnt1ms=cnt1ms+16'b1;
+    end 
+////////////////////////////////////////////////////////////   
+initial                                     //原始密码初始化
+ begin
+        password_1=8;
+        password_2=8;
+        password_3=8;
+        password_4=8;
+        flag_time=1;
+end
+////////////////////////////////////////////////////////////
+reg [4:0] password_input_1;     //储存依次输入的四位密码
+reg [4:0] password_input_2;
+reg [4:0] password_input_3;
+reg [4:0] password_input_4;
+
+reg [4:0] password_change_1;      //储存依次修改时输入的四位密码
+reg [4:0] password_change_2;
+reg [4:0] password_change_3;
+reg [4:0] password_change_4;
+
+always @( negedge key_ready)
+begin
+	
+	 if(count_15==1)begin flag_time=flag_time+1;k2=1; end//10秒内无按下则失败
+	 if(keycode<10)                             //对于数字密码进行存储
+	begin
+		password_input_4<=keycode;
+	    password_input_3<=password_input_4;
+	    password_input_2<=password_input_3;
+	    password_input_1<=password_input_2;
+	end
+	else if(keycode==5'hd)//钥匙开锁、复位
+		begin 
+			flag_b=~flag_b;
+			if(flag_b==0)
+			begin
+			change_lemp=0;
+			flag_time=1;
+			change_lemp1=0;
+			k2=0;	
+			end
+	    end
+	else if(k1==1)begin flag_time=1;end//警报后恢复原态
+	else if(keycode==5'hb&&flag_b==0)  //在锁未开的状态下按下确认键，
+//判断是否符合条件执行开锁，否则解锁失败的次数加一
+	begin
+        if((password_input_1==password_1)&&(password_input_2==password_2)&&
+
+(password_input_3==password_3)&&(password_input_4==password_4))
+        begin flag_b=1;end
+        else
+        begin
+        flag_b=0;
+        flag_time=flag_time+1;
+        end
+    end
+    else if(keycode==5'hc&&flag_b==1)     //按下c键在开锁成功后时改初始密码
+    begin
+		change_lemp1=1;
+		password_change_1 <=password_input_1;
+		password_change_2 <=password_input_2;
+		password_change_3 <=password_input_3;
+		password_change_4 <=password_input_4;
+    end
+    else if(keycode==5'hb&&flag_b==1)      //若改密正确后则保存
+   begin	    
+	    if((password_change_1==password_input_1)&&
+
+(password_change_2==password_input_2)&&(password_change_3==password_input_3)&&
+
+(password_change_4==password_input_4))
+	    begin
+			change_lemp=1;
+			password_1<=password_change_1 ;
+			password_2<=password_change_2 ;
+			password_3<=password_change_3 ;
+			password_4<=password_change_4 ;
+	    end
+    end
+ end
+ ///////////////////////////////////////////
+always@(posedge clk1000Hz)          //15s倒计时计数器
+begin
+	if(k2==1)count_15=0;
+    else if((flag_b==0)&&(keycode==5'hb))
+	begin count_15=15000; end 
+	 else if ((count_15!=1))
+	 begin 
+		count_15=count_15-1;
+		if(count_15==0)
+		begin 
+			//flag_time=flag_time+1;
+        end	
+    end
+end 
+              
+ 
+ ////////////////////////////////////////
+ 
+ 
+ always @(negedge clk1000Hz)           //开锁失败次数显示
+ begin
+if (flag_time==1)begin led_1=1;led_2=1;led_3=1;end
+else if (flag_time==2)begin led_1=0;led_2=1;led_3=1;end
+else if (flag_time==3)begin led_1=0;led_2=0;led_3=1;end
+else begin led_1=~led_1;led_2=~led_2;led_3=~led_3;end
+end
+     
+        
+endmodule	
